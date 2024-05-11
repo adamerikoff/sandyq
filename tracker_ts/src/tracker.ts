@@ -22,7 +22,7 @@ class Tracker {
     track(event: string, category: string) {
         const payload: TrackPayload = {
             tracking: {
-                type: "event",
+                type: category == "Page Views" ? "page" : "event",
                 event: "temp-data",
                 identity: "temp-data",
                 ua: "temp-data",
@@ -40,9 +40,24 @@ class Tracker {
         const img = new Image();
         img.src = url_string;
     }
+
+    public page(path: string) {
+        this.track(path, "Page views");
+    }
 }
 
 ((window, document) => {
-    window._tracker = new Tracker();
     console.log("tracker loaded!");
+    const path = window.location.pathname;
+    let tracker = new Tracker("http://127.0.0.1:9876/track");
+    window._tracker = window._tracker || tracker;
+    tracker.page(path)
+
+    window.addEventListener(
+        "hashchange",
+        () => {
+            tracker.page(document.location.hash);
+        },
+        false
+    );
 })(window, document);
