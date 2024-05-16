@@ -1,4 +1,4 @@
-interface TrackingData {
+export interface TrackingData {
     type: "event" | "page";
     identity: string;
     ua: string;
@@ -7,12 +7,12 @@ interface TrackingData {
     referrer: string;
 }
 
-interface TrackPayload {
+export interface TrackPayload {
     tracking: TrackingData;
     site_id: string;
 }
 
-class Tracker {
+export class Tracker {
     private url: string;
     private siteID: string;
     private referrer: string;
@@ -53,15 +53,27 @@ class Tracker {
         this.setSession("ID", customID);
     }
 
-
     private trackRequest(payload: TrackPayload) {
-        const encodedPayload = btoa(JSON.stringify(payload));
-        const url_string = `${this.url}?data=${encodedPayload}`;
-        console.log(encodedPayload)
-        console.log(atob(encodedPayload))
-        const img = new Image(1, 1); // Create a 1x1 pixel image
-        img.onerror = img.onload = () => { /* No need to handle response */ };
-        img.src = url_string;
+        const options: RequestInit = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        };
+        fetch(this.url, options)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
     }
 
     private getSession(key) {
@@ -76,48 +88,3 @@ class Tracker {
         sessionStorage.setItem(key, JSON.stringify(value));
     }
 }
-
-
-
-((window, document) => {
-    const ds = document.currentScript?.dataset;
-    if (!ds) {
-        console.error("you must have a data-siteid in your script tag!");
-        return;
-    } else if (!ds.siteid) {
-        console.error("you must have a data-siteid in your script tag!");
-        return;
-    }
-    let externalReferrer = "";
-    const ref = document.referrer;
-    if (ref && ref.indexOf(`${window.location.protocol}//${window.location.host}`) == 0) {
-        externalReferrer = ref;
-    }
-    let tracker = new Tracker("http://0.0.0.0:9876/track", ds.siteid, externalReferrer);
-    const path = window.location.pathname;
-    window._tracker = window._tracker || tracker;
-    tracker.page(path)
-    window.addEventListener(
-        "hashchange",
-        () => {
-            tracker.page(document.location.hash);
-        },
-        false
-    );
-    const history = window.history;
-    if (history.pushState) {
-        const originalFn = history["pushState"];
-        history.pushState = function () {
-            originalFn.apply(this, arguments);
-            tracker.page(window.location.pathname);
-        };
-
-        window.addEventListener(
-            "popstate",
-            () => {
-                tracker.page(window.location.pathname);
-            }
-        )
-    }
-})(window, document);
-
