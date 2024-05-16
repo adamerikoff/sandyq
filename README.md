@@ -1,8 +1,8 @@
 ## SandyqTracker
 
-This project is a web analytics tracker built with a combination of technologies:
-
 ![architecture_design](https://github.com/adamerikoff/sandyq/blob/main/tracker.png?raw=true)
+
+Web Analytics Tracker built with a combination of technologies:
 
 * **Tracker.js** Implemented using JavaScript (TypeScript) for client-side tracking.
 * **Backend:** Uses Golang for server-side functionality.
