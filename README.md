@@ -2,6 +2,8 @@
 
 This project is a web analytics tracker built with a combination of technologies:
 
+![architecture_design](https://github.com/adamerikoff/sandyq/blob/main/tracker.png?raw=true)
+
 * **Tracker.js** Implemented using JavaScript (TypeScript) for client-side tracking.
 * **Backend:** Uses Golang for server-side functionality.
 * **Database:** Leverages ClickHouse for efficient data storage and retrieval.
