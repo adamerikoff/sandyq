@@ -2,7 +2,7 @@
   "name": "tracker_ts",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "script.js",
   "scripts": {
     "start": "npm run build && http-server",
     "build": "rm -rf static/tracker* && esbuild --bundle --minify --global-name=_Tracker --format=iife --outfile=static/script.js src/main.ts",
