@@ -1,0 +1,23 @@
+services:
+  backend: # Backend service
+    build: # Build the backend service using a Dockerfile
+      context: ./sandyq # Use the Dockerfile in the backend directory
+    ports: # Expose ports for accessing the backend service
+      - "8080:80" # Map port 8080 on the host to port 8080 in the container
+    volumes: # Mount a volume to share code between host and container
+      - ./sandyq:/app # Mount the backend directory to /app in the container
+    depends_on: # Define dependencies for the backend service
+      - clickhouse # Depend on the db service (ClickHouse database)
+  
+  clickhouse:
+    image: yandex/clickhouse-server
+    platform: linux/amd64
+    ports:
+      - "9000:9000" # ClickHouse default port for client-server communication
+      - "8123:8123" # ClickHouse default port for HTTP interface
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse # Mount a volume to persist ClickHouse data
+
+
+volumes: # Define named volumes
+  clickhouse-data: # clickhouse-data volume

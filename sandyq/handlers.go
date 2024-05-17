@@ -14,7 +14,7 @@ type PostResponse struct {
 	Message string `json:"message"`
 }
 
-func handleGet(w http.ResponseWriter, r *http.Request) {
+func handleGet(w http.ResponseWriter, _ *http.Request) {
 	response := GetResponse{
 		Message: "Hello, World! This is a GET request.",
 		Body:    TrackingInfoDB,
@@ -30,7 +30,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Printf("Received tracking info via POST: %+v", data)
-	response := PostResponse{Message: fmt.Sprintf("Received tracking info via POST: %+v", data)}
+	response := PostResponse{Message: "Received tracking info via POST."}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

@@ -57,3 +57,5 @@ bin/
 __tests__/
 *.test.js
 *.spec.js
+
+clickhouse-data/
