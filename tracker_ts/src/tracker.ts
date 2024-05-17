@@ -41,7 +41,6 @@ export class Tracker {
     }
 
     public sendTrackingData(payload: TrackPayload): void {
-
         fetch(this.URL, {
             method: "POST",
             headers: {
