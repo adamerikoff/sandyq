@@ -56,8 +56,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 
-	var temp ClickHouseTrackingModel
-
+	dataToInsert := ClickHouseTrackingModel{
+		IP:           getClientIP(r),
+		SiteID:       data.SiteID,
+		Page:         data.TrackingData.Page,
+		Agent:        data.TrackingData.Agent,
+		Referrer:     data.TrackingData.Referrer,
+		PreviousPage: data.TrackingData.PreviousPage,
+	}
 	// insert into clickhouse db
-	fmt.Printf("CLICKHOUSE INSERT: %+v", temp)
+	fmt.Printf("CLICKHOUSE INSERT: %+v", dataToInsert)
 }
