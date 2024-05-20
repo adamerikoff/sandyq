@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+
+	"github.com/ClickHouse/clickhouse-go/v2"
 )
 
 type GetResponse struct {
@@ -64,6 +67,21 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		Referrer:     data.TrackingData.Referrer,
 		PreviousPage: data.TrackingData.PreviousPage,
 	}
-	// insert into clickhouse db
-	fmt.Printf("CLICKHOUSE INSERT: %+v", dataToInsert)
+
+	conn, err := clickhouse.Open(&clickhouse.Options{
+		Addr: []string{"0.0.0.0:9000"},
+		Auth: clickhouse.Auth{
+			Database: "default",
+			Username: "default",
+			Password: "",
+		},
+		Debug: true,
+	})
+	if err != nil {
+		log.Fatalf("Failed to connect to ClickHouse: %v", err)
+	}
+	defer conn.Close()
+
+	// Insert the data
+	insertIntoClickHouse(conn, dataToInsert)
 }

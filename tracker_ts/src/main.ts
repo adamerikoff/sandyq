@@ -16,7 +16,7 @@ import { Tracker, TrackPayload } from "./tracker";
 
         const referrer: string = document.referrer;
         const agent: string = window.navigator.userAgent;
-        const URL: string = "http://0.0.0.0:8080/track";
+        const URL: string = "http://localhost:8080/track";
         const siteID = ds.siteid
 
         window._tracker = new Tracker(siteID, referrer, agent, URL)

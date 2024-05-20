@@ -12,14 +12,14 @@ stop:
 
 create-table:
 	@echo "Creating table in ClickHouse..."
-	@CREATE_TABLE_QUERY="CREATE TABLE IF NOT EXISTS tracking_info ( \
+	@CREATE_TABLE_QUERY="CREATE TABLE IF NOT EXISTS tracking_table ( \
 		ip String, \
 		siteID String, \
 		page String, \
 		agent String, \
 		referrer String, \
-		previous_page String \
+		previousPage String \
 	) ENGINE = MergeTree() \
-	ORDER BY (siteID, page, referrer, previous_page);" && \
+	ORDER BY (siteID, page, referrer, previousPage);" && \
 	docker-compose exec clickhouse bash -c "clickhouse-client --query=\"$${CREATE_TABLE_QUERY}\""
 	@echo "Table created successfully."
