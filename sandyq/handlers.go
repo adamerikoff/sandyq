@@ -7,41 +7,57 @@ import (
 )
 
 type GetResponse struct {
-	Message string         `json:"message"`
-	Body    []TrackingInfo `json:"body"`
+	Message string `json:"message"`
+	Body    string `json:"body"`
 }
 type PostResponse struct {
 	Message string `json:"message"`
 }
 
 func HandleRequests(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	switch r.Method {
 	case http.MethodGet:
 		handleGet(w, r)
 	case http.MethodPost:
 		handlePost(w, r)
+	case http.MethodOptions:
+		handleOptions(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
+func handleOptions(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Allow", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.WriteHeader(http.StatusOK)
+}
+
 func handleGet(w http.ResponseWriter, _ *http.Request) {
 	response := GetResponse{
 		Message: "Hello, World! This is a GET request.",
-		Body:    TrackingInfoDB,
+		Body:    "TrackingInfoDB",
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
-	var data TrackingInfo
+	var data TrackingPayload
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		http.Error(w, "Failed to decode request body", http.StatusBadRequest)
 		return
 	}
 	fmt.Printf("Received tracking info via POST: %+v", data)
-	response := PostResponse{Message: "Received tracking info via POST."}
+	response := PostResponse{Message: "Received!"}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+
+	var temp ClickHouseTrackingModel
+
+	// insert into clickhouse db
+	fmt.Printf("CLICKHOUSE INSERT: %+v", temp)
 }

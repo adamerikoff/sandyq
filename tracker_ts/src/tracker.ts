@@ -6,8 +6,8 @@ export interface TrackingData {
 }
 
 export interface TrackPayload {
-    tracking:   TrackingData;
-    site_id:    string;
+    trackingData:   TrackingData;
+    siteID:    string;
 }
 
 export class Tracker {
@@ -34,8 +34,8 @@ export class Tracker {
             referrer: this.referrer,
         };
         const payload: TrackPayload = {
-            tracking: trackingData,
-            site_id: this.siteID,
+            trackingData: trackingData,
+            siteID: this.siteID,
         };
         return payload;
     }

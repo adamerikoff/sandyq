@@ -16,45 +16,23 @@ import { Tracker, TrackPayload } from "./tracker";
 
         const referrer: string = document.referrer;
         const agent: string = window.navigator.userAgent;
-        const URL: string = "https://0.0.0.0:8080/track";
+        const URL: string = "http://0.0.0.0:8080/track";
         const siteID = ds.siteid
 
         window._tracker = new Tracker(siteID, referrer, agent, URL)
-        // track(window, document);
-        fetch(URL, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => console.log("Success:", data))
-        .catch(error => console.error("Error:", error));
-        
+        track(window, document);
     } else {
         console.log("Tracker already exists!")
-        window._tracker = window._tracker;
-        //track(window, document);
-        const URL: string = "https://0.0.0.0:8080/track";
-        fetch(URL, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => console.log("Success:", data))
-        .catch(error => console.error("Error:", error));
     }
 
-    // function track(w, d) : void {
-    //     const page: string = w.location.pathname;
-    //     const previousPage: string = d.referrer;
+    function track(w, d) : void {
+        const page: string = w.location.pathname;
+        const previousPage: string = d.referrer;
 
 
-    //     const payload: TrackPayload = w._tracker.buildTrackPayload(page, previousPage);
-    //     w._tracker.sendTrackingData(payload);
-    //     console.log("Payload send: ", payload);
-    // }
+        const payload: TrackPayload = w._tracker.buildTrackPayload(page, previousPage);
+        w._tracker.sendTrackingData(payload);
+        console.log("Payload send: ", payload);
+    }
     
 })(window, document);
